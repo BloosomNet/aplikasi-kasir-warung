@@ -15,6 +15,7 @@ body {
 }
 
 h1 { margin: 0 0 8px; }
+h2 { margin: 0 0 12px; }
 
 .keterangan { color: #555; }
 
@@ -25,3 +26,68 @@ h1 { margin: 0 0 8px; }
   padding: 16px;
   margin-top: 16px;
 }
+
+.pesan { color: #9a3b26; }
+
+/* Formulir tambah dan ubah produk */
+form label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+form input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font: inherit;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2f6b4f;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover { background: #265841; }
+
+.baris-tombol {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#tombol-batal { background: #777; }
+
+.tombol-kecil {
+  padding: 6px 10px;
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+.tombol-hapus { background: #9a3b26; }
+.tombol-hapus:hover { background: #7e2f1e; }
+
+/* Tabel daftar produk, bisa digeser ke samping di layar HP */
+.bungkus-tabel { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #e5e5e5;
+  white-space: nowrap;
+}
+
+th { background: #f4f1ea; }

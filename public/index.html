@@ -11,9 +11,52 @@
     <h1>Kasir Warung</h1>
     <p class="keterangan">Aplikasi kasir sederhana untuk warung dan UMKM kecil.</p>
     <p id="status">Memeriksa server...</p>
+
     <section class="kartu">
-      <h2>Tahap 1: Kerangka aplikasi</h2>
-      <p>Server sudah berjalan. Daftar produk, transaksi kasir, dan laporan harian dibuat di tahap berikutnya.</p>
+      <h2 id="judul-form">Tambah Produk</h2>
+      <form id="form-produk">
+        <label>
+          Nama produk
+          <input type="text" id="nama" required maxlength="100" placeholder="Contoh: Kopi Sachet">
+        </label>
+        <label>
+          Harga (Rp)
+          <input type="number" id="harga" required min="1" step="1" placeholder="5000">
+        </label>
+        <label>
+          Stok
+          <input type="number" id="stok" required min="0" step="1" placeholder="20">
+        </label>
+        <label>
+          Kategori
+          <input type="text" id="kategori" maxlength="50" placeholder="Contoh: Minuman">
+        </label>
+        <p id="pesan-form" class="pesan" hidden></p>
+        <div class="baris-tombol">
+          <button type="submit" id="tombol-simpan">Simpan Produk</button>
+          <button type="button" id="tombol-batal" hidden>Batal Ubah</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="kartu">
+      <h2>Daftar Produk</h2>
+      <p id="pesan-daftar" class="pesan" hidden></p>
+      <div class="bungkus-tabel">
+        <table>
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Harga</th>
+              <th>Stok</th>
+              <th>Kategori</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="daftar-produk"></tbody>
+        </table>
+      </div>
+      <p id="kosong" hidden>Belum ada produk. Tambahkan produk pertama di atas.</p>
     </section>
   </main>
   <script src="/js/app.js"></script>
