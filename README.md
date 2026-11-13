@@ -14,7 +14,7 @@ Pemilik warung atau toko kecil yang ingin mencatat penjualan harian dengan rapi,
 - [x] Tahap 4: Riwayat transaksi dan laporan harian
 - [ ] Tahap 5: Tampilan rapi di HP dan pencarian produk
   - [x] Tahap 5a: Pencarian produk di halaman Kelola Produk dan Kasir
-  - [ ] Tahap 5b: Tampilan rapi di HP
+  - [x] Tahap 5b: Tampilan rapi di HP
 - [ ] Tahap 6: Login pemilik warung
 - [ ] Tahap 7: Deploy online
 

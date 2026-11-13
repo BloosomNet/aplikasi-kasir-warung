@@ -65,11 +65,13 @@ form input {
 
 button {
   padding: 10px 16px;
+  min-height: 44px; /* Tinggi ketuk minimum supaya gampang ditekan di HP */
   border: none;
   border-radius: 8px;
   background: #2f6b4f;
   color: #fff;
   font: inherit;
+  font-size: 16px; /* 16px supaya peramban HP tidak memperbesar layar saat kolom disentuh */
   cursor: pointer;
 }
 
@@ -86,6 +88,8 @@ button:hover { background: #265841; }
 .tombol-kecil {
   padding: 6px 10px;
   margin-right: 6px;
+  min-height: 36px;
+  min-width: 44px;
   font-size: 14px;
 }
 
@@ -112,8 +116,16 @@ th { background: #f4f1ea; }
 /* Navigasi antar halaman dan halaman kasir */
 .navigasi {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 8px 16px;
   margin-bottom: 16px;
+}
+
+/* Tautan navigasi dibuat setinggi 44px supaya gampang diketuk di HP */
+.navigasi a, .navigasi strong {
+  display: inline-block;
+  padding: 10px 0;
+  line-height: 1.4;
 }
 
 .navigasi a { color: #2f6b4f; }
@@ -146,3 +158,45 @@ th { background: #f4f1ea; }
 .baris-bisa-diklik:hover { background: #f4f1ea; }
 
 .tombol-abu { background: #777; }
+
+/* Tahap 5b — Tampilan rapi di HP.
+   Aturan di bawah ini hanya berlaku di layar kecil (lebar 600px ke bawah,
+   ukuran HP pada umumnya). Di laptop tidak ada yang berubah. */
+@media (max-width: 600px) {
+  /* Ruang tepi lebih hemat supaya isi lebih lega di layar sempit */
+  .wadah { padding: 16px 12px; }
+  h1 { font-size: 24px; }
+  .kartu { padding: 12px; }
+
+  /* Tombol utama jadi selebar layar dan bertumpuk, supaya tidak salah tekan */
+  .baris-tombol { flex-direction: column; }
+  .baris-tombol button { width: 100%; }
+
+  /* Kolom isian lebih tinggi dan huruf tetap 16px (anti perbesar layar) */
+  form input, .pencarian input { padding: 12px; font-size: 16px; }
+
+  /* Tombol kecil di tabel dan keranjang naik jadi 44px tingginya */
+  .tombol-kecil { min-height: 44px; padding: 10px 12px; }
+
+  /* Baris pilih produk di kasir: nama di atas, tombol Tambah selebar layar */
+  .baris-produk { flex-wrap: wrap; }
+  .baris-produk span { flex: 1 1 100%; }
+  .baris-produk button { flex: 1 1 100%; }
+
+  /* Filter tanggal di riwayat: dua kolom tanggal bertumpuk ke bawah */
+  .baris-filter label { flex: 1 1 100%; }
+
+  /* Tabel: huruf dan jarak lebih kecil, kolom nama boleh membungkus
+     (kolom lain tetap satu baris dan bisa digeser ke samping) */
+  th, td { padding: 6px; font-size: 14px; }
+  td:first-child { white-space: normal; }
+
+  .ringkasan p { font-size: 16px; }
+  .total { font-size: 17px; }
+}
+
+/* Layar sangat kecil (HP lama / lebar 400px ke bawah): tabel lebih ringkas lagi */
+@media (max-width: 400px) {
+  th, td { padding: 5px; font-size: 13px; }
+  .tombol-kecil { font-size: 13px; }
+}

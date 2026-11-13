@@ -135,6 +135,28 @@ Kekurangan saat ini (jujur):
 - Pencarian hanya mencocokkan nama dan kategori, belum harga atau stok.
 - Belum ada tampilan rapi di HP — itu Tahap 5b, potongan berikutnya.
 
+## Tahap 5b — Selesai: Tampilan rapi di HP
+
+Yang sudah dibuat (hanya di `public/css/style.css`, tidak ada perubahan HTML atau JavaScript):
+- Tombol utama dibuat setinggi minimal 44px dan huruf kolom isian dibuat 16px, supaya gampang ditekan di HP dan peramban HP tidak memperbesar layar saat kolom disentuh.
+- Navigasi antar halaman bisa membungkus ke baris baru, dan tiap tautannya dibuat setinggi 44px supaya gampang diketuk.
+- Aturan layar kecil (`@media max-width: 600px`, ukuran HP pada umumnya): ruang tepi lebih hemat, judul lebih kecil, kartu lebih ringkas, tombol utama jadi selebar layar dan bertumpuk, kolom isian lebih tinggi, tombol kecil di tabel dan keranjang naik jadi 44px, baris pilih produk di kasir jadi nama di atas dan tombol Tambah selebar layar, dua kolom tanggal di riwayat bertumpuk ke bawah, tabel hurufnya lebih kecil dan kolom nama boleh membungkus.
+- Aturan layar sangat kecil (`@media max-width: 400px`): tabel lebih ringkas lagi.
+- Di laptop tidak ada yang berubah — semua aturan baru hanya berlaku di layar kecil.
+
+Cara kerja singkat:
+- Peramban HP membaca lebar layarnya sendiri, lalu memakai aturan `@media` yang cocok. Tidak ada JavaScript baru: yang berubah hanya tampilan, bukan data atau alur kerja.
+
+Yang sudah diuji (server Express di port 3000, basis data MariaDB lokal):
+- Semua halaman dimuat HTTP 200: `/`, `/kasir.html`, `/riwayat.html`, `/css/style.css`, `/js/app.js`, `/js/kasir.js`, `/js/riwayat.js`, `/api/sehat`.
+- CSS yang disajikan server sudah berisi kedua aturan `@media` (600px dan 400px) dan aturan tinggi ketuk 44px — diperiksa langsung dari hasil `curl`.
+- Uji regresi: tambah produk Kopi Sachet Rp5.000 berhasil, lalu `?cari=kopi` tetap mengembalikan 1 hasil — pencarian Tahap 5a tidak rusak.
+- Tidak ada error di log server; data uji dibersihkan (daftar produk kembali kosong), server dimatikan sesudah uji.
+
+Kekurangan saat ini (jujur):
+- Belum diuji di HP fisik dan belum ada tangkapan layar lebar 390px — di VM ini tidak ada peramban headless untuk mengambilnya. Yang diverifikasi baru aturan CSS-nya dan halaman yang dimuat server. Kalau di HP Rid nanti ada yang masih sempit, kabari, akan diperbaiki.
+- Belum ada login dan belum ter-deploy.
+
 ## Tahap berikutnya
 
-Tahap 5b: Tampilan rapi di HP (tata letak responsif untuk layar kecil).
+Tahap 6: Login pemilik warung.
