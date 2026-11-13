@@ -2,6 +2,7 @@
 // lalu mengirim transaksi ke server untuk disimpan.
 const daftarPilihProduk = document.getElementById('daftar-pilih-produk');
 const produkKosong = document.getElementById('produk-kosong');
+const inputCari = document.getElementById('cari-produk');
 const pesanProduk = document.getElementById('pesan-produk');
 const tabelKeranjang = document.getElementById('keranjang');
 const teksKeranjangKosong = document.getElementById('keranjang-kosong');
@@ -118,12 +119,20 @@ function ubahJumlah(produk, perubahan) {
 
 async function muatProduk() {
   try {
-    const tanggapan = await fetch('/api/produk');
+    // Kata kunci pencarian dikirim sebagai ?cari=, supaya penyaringan dilakukan server.
+    const kataKunci = inputCari.value.trim();
+    const alamat = kataKunci
+      ? `/api/produk?cari=${encodeURIComponent(kataKunci)}`
+      : '/api/produk';
+    const tanggapan = await fetch(alamat);
     if (!tanggapan.ok) throw new Error('gagal memuat');
     semuaProduk = await tanggapan.json();
     tampilkanPesan(pesanProduk, '');
     daftarPilihProduk.innerHTML = '';
     produkKosong.hidden = semuaProduk.length > 0;
+    produkKosong.textContent = kataKunci
+      ? `Tidak ada produk yang cocok dengan "${kataKunci}".`
+      : 'Belum ada produk. Tambahkan dulu di halaman Kelola Produk.';
 
     semuaProduk.forEach((produk) => {
       const baris = document.createElement('div');
@@ -145,6 +154,13 @@ async function muatProduk() {
 }
 
 inputBayar.addEventListener('input', perbaruiKembalian);
+
+// Pencarian: tunggu 300 ms setelah pengguna berhenti mengetik, baru muat ulang daftar.
+let jedaCari = null;
+inputCari.addEventListener('input', () => {
+  clearTimeout(jedaCari);
+  jedaCari = setTimeout(muatProduk, 300);
+});
 
 document.getElementById('tombol-kosongkan').addEventListener('click', () => {
   keranjang = {};

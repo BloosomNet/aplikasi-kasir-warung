@@ -12,9 +12,12 @@ const pesanForm = document.getElementById('pesan-form');
 const pesanDaftar = document.getElementById('pesan-daftar');
 const daftarProduk = document.getElementById('daftar-produk');
 const teksKosong = document.getElementById('kosong');
+const inputCari = document.getElementById('cari-produk');
 
 // Id produk yang sedang diubah. Null berarti formulir sedang menambah produk baru.
 let idYangDiubah = null;
+// Penanda jeda supaya pencarian tidak mengirim permintaan di setiap ketikan.
+let jedaCari = null;
 
 function tampilkanPesan(el, teks) {
   el.textContent = teks;
@@ -28,12 +31,21 @@ function formatRupiah(angka) {
 
 async function muatProduk() {
   try {
-    const tanggapan = await fetch('/api/produk');
+    // Kata kunci pencarian dikirim sebagai ?cari=, supaya penyaringan dilakukan server.
+    const kataKunci = inputCari.value.trim();
+    const alamat = kataKunci
+      ? `/api/produk?cari=${encodeURIComponent(kataKunci)}`
+      : '/api/produk';
+    const tanggapan = await fetch(alamat);
     if (!tanggapan.ok) throw new Error('gagal memuat');
     const produk = await tanggapan.json();
     tampilkanPesan(pesanDaftar, '');
     daftarProduk.innerHTML = '';
     teksKosong.hidden = produk.length > 0;
+    // Kalau sedang mencari tapi tidak ada yang cocok, beri tahu dengan jelas.
+    teksKosong.textContent = kataKunci
+      ? `Tidak ada produk yang cocok dengan "${kataKunci}".`
+      : 'Belum ada produk. Tambahkan produk pertama di atas.';
 
     produk.forEach((item) => {
       const baris = document.createElement('tr');
@@ -146,6 +158,12 @@ async function hapusProduk(item) {
     tampilkanPesan(pesanDaftar, 'Produk gagal dihapus. Periksa server dan basis data.');
   }
 }
+
+// Pencarian: tunggu 300 ms setelah pengguna berhenti mengetik, baru muat ulang daftar.
+inputCari.addEventListener('input', () => {
+  clearTimeout(jedaCari);
+  jedaCari = setTimeout(muatProduk, 300);
+});
 
 // Memeriksa server, lalu memuat daftar produk saat halaman dibuka.
 fetch('/api/sehat')

@@ -109,6 +109,32 @@ Project ini dirancang supaya nanti bisa digabung dengan project selingan menjadi
 - Project yang berjalan paralel: inventaris-barang-warung (stok, barang masuk/keluar, stok menipis, supplier) dan katalog-produk-warung (katalog + pemesanan via WhatsApp).
 - Arah jangka panjang: kesulitan naik bertahap — setelah gabung jadi sistem UMKM, tambah modul yang lebih dalam (keuangan warung, laporan dan grafik, export data, pencarian/filter/pagination, multi-pengguna dan peran), menuju aplikasi nyata yang dipakai orang sungguhan. Tiap project tetap maksimal satu konsep baru dan tetap bisa dijelaskan ulang saat interview.
 
+## Tahap 5a — Selesai: Pencarian produk
+
+Yang sudah dibuat:
+- Model `src/models/Produk.js`: `semuaProduk` sekarang menerima kata kunci — kalau ada, produk disaring dengan `LIKE` pada nama atau kategori. Tanda `%`, `_`, dan `\` di kata kunci diamankan supaya dianggap huruf biasa, bukan pola.
+- Pengatur `src/controllers/produkController.js`: `daftarProduk` membaca kata kunci dari `?cari=`, dipangkas dan dibatasi 100 huruf, lalu diteruskan ke model. Tanpa `?cari=` daftar lama tetap dikembalikan semua.
+- Halaman Kelola Produk (`public/index.html` dan `public/js/app.js`): kolom pencarian di atas daftar produk. Permintaan baru dikirim 300 ms setelah pengguna berhenti mengetik (debounce), supaya server tidak dibanjiri tiap ketikan. Kalau tidak ada yang cocok, tampil pesan "Tidak ada produk yang cocok dengan ...".
+- Halaman Kasir (`public/kasir.html` dan `public/js/kasir.js`): kolom pencarian yang sama di atas daftar pilih produk, dengan debounce yang sama.
+- Gaya baru di `public/css/style.css`: kelas `.pencarian` untuk kolom pencarian, tampilannya sama seperti kolom formulir lain.
+
+Cara kerja singkat:
+- Peramban mengirim kata kunci ke `GET /api/produk?cari=...`. Server menyaring di basis data dengan `LIKE`, lalu peramban menampilkan hasilnya. Penyaringan di server (bukan di peramban) supaya daftar tetap benar walau produknya banyak nanti.
+
+Yang sudah diuji (basis data MariaDB 10.11 lokal, server Express di port 3000):
+- Data uji: Kopi Sachet Rp5.000 (Minuman), Gula 1kg Rp17.000 (Bahan Dapur), Teh Melati Rp4.000 (Minuman)
+- `?cari=kopi` mengembalikan 1 hasil: Kopi Sachet; `?cari=KOPI` juga 1 hasil (pencarian tidak peduli huruf besar-kecil)
+- `?cari=minuman` mengembalikan 2 hasil: Kopi Sachet dan Teh Melati (cocok lewat kategori)
+- `?cari=tidakada` mengembalikan daftar kosong; `?cari=%` dan `?cari=_` juga 0 hasil (tanda pola tidak lagi dianggap pola)
+- Tanpa `?cari=` tetap mengembalikan semua 3 produk
+- Halaman `/`, `/kasir.html`, `/js/app.js`, dan `/js/kasir.js` dimuat HTTP 200, kolom pencarian ada di kedua halaman, tidak ada error di log server
+- Catatan: uji pertama menemukan bug — klausa `ESCAPE "\\"` di SQL membuat MariaDB menolak permintaan (500). Diperbaiki dengan menghapus klausa itu dan mengandalkan karakter pelindung bawaan LIKE; sesudah perbaikan semua uji di atas lolos.
+- Data uji dibersihkan, semua tabel kembali kosong
+
+Kekurangan saat ini (jujur):
+- Pencarian hanya mencocokkan nama dan kategori, belum harga atau stok.
+- Belum ada tampilan rapi di HP — itu Tahap 5b, potongan berikutnya.
+
 ## Tahap berikutnya
 
-Tahap 5: Tampilan rapi di HP dan pencarian produk.
+Tahap 5b: Tampilan rapi di HP (tata letak responsif untuk layar kecil).

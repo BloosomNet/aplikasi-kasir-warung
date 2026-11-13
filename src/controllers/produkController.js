@@ -28,7 +28,9 @@ function rapikanIsiProduk(data) {
 
 async function daftarProduk(req, res) {
   try {
-    const produk = await Produk.semuaProduk();
+    // Kata kunci pencarian dari ?cari=, dipangkas dan dibatasi 100 huruf.
+    const cari = typeof req.query.cari === 'string' ? req.query.cari.trim().slice(0, 100) : '';
+    const produk = await Produk.semuaProduk(cari);
     res.json(produk);
   } catch (kesalahan) {
     console.error(kesalahan);

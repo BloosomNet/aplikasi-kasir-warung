@@ -2,8 +2,21 @@
 const pool = require('../config/database');
 
 // Mengambil semua produk, diurutkan berdasarkan nama.
-async function semuaProduk() {
-  const [baris] = await pool.query('SELECT * FROM produk ORDER BY nama ASC');
+// Kalau diberi kata kunci, hanya produk yang nama atau kategorinya cocok yang dikembalikan.
+// Tanda % dan _ di kata kunci diamankan supaya dianggap huruf biasa, bukan pola LIKE.
+async function semuaProduk(kataKunci) {
+  const kata = typeof kataKunci === 'string' ? kataKunci.trim() : '';
+  if (!kata) {
+    const [baris] = await pool.query('SELECT * FROM produk ORDER BY nama ASC');
+    return baris;
+  }
+  const pola = '%' + kata.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_') + '%';
+  // Tanda \ di pola sudah diamankan di atas; LIKE MySQL memakai \ sebagai
+  // karakter pelindung bawaan, jadi tidak perlu klausa ESCAPE.
+  const [baris] = await pool.query(
+    'SELECT * FROM produk WHERE nama LIKE ? OR kategori LIKE ? ORDER BY nama ASC',
+    [pola, pola]
+  );
   return baris;
 }
 
