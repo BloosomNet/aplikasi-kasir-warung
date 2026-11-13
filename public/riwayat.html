@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat &amp; Laporan — Kasir Warung</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="wadah">
+    <nav class="navigasi">
+      <a href="/">Kelola Produk</a>
+      <a href="/kasir.html">Kasir</a>
+      <strong>Riwayat &amp; Laporan</strong>
+    </nav>
+    <h1>Riwayat &amp; Laporan</h1>
+    <p class="keterangan">Lihat penjualan, omzet harian, dan produk terlaris dalam rentang tanggal.</p>
+    <p id="status">Memeriksa server...</p>
+
+    <section class="kartu">
+      <h2>Rentang Tanggal</h2>
+      <form id="form-filter">
+        <div class="baris-filter">
+          <label>
+            Dari tanggal
+            <input type="date" id="dari" required>
+          </label>
+          <label>
+            Sampai tanggal
+            <input type="date" id="sampai" required>
+          </label>
+        </div>
+        <p id="pesan-filter" class="pesan" hidden></p>
+        <button type="submit">Tampilkan</button>
+      </form>
+    </section>
+
+    <section class="kartu">
+      <h2>Ringkasan</h2>
+      <div class="ringkasan">
+        <p>Jumlah transaksi: <strong id="jumlah-transaksi">—</strong></p>
+        <p>Total omzet: <strong id="total-omzet">—</strong></p>
+      </div>
+    </section>
+
+    <section class="kartu">
+      <h2>Laporan Harian</h2>
+      <div class="bungkus-tabel">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Transaksi</th>
+              <th>Omzet</th>
+            </tr>
+          </thead>
+          <tbody id="laporan-harian"></tbody>
+        </table>
+      </div>
+      <p id="harian-kosong" hidden>Belum ada penjualan pada rentang tanggal ini.</p>
+    </section>
+
+    <section class="kartu">
+      <h2>Produk Terlaris</h2>
+      <div class="bungkus-tabel">
+        <table>
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Terjual</th>
+              <th>Pendapatan</th>
+            </tr>
+          </thead>
+          <tbody id="produk-terlaris"></tbody>
+        </table>
+      </div>
+      <p id="terlaris-kosong" hidden>Belum ada produk terjual pada rentang tanggal ini.</p>
+    </section>
+
+    <section class="kartu">
+      <h2>Daftar Transaksi</h2>
+      <p class="keterangan">Ketuk satu baris untuk melihat rincian barangnya.</p>
+      <p id="pesan-riwayat" class="pesan" hidden></p>
+      <div class="bungkus-tabel">
+        <table>
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Waktu</th>
+              <th>Barang</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="daftar-transaksi"></tbody>
+        </table>
+      </div>
+      <p id="riwayat-kosong" hidden>Belum ada transaksi pada rentang tanggal ini.</p>
+      <div id="rincian" hidden>
+        <h3 id="judul-rincian">Rincian transaksi</h3>
+        <div class="bungkus-tabel">
+          <table>
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="daftar-rincian"></tbody>
+          </table>
+        </div>
+        <p>Bayar: <strong id="rincian-bayar">—</strong></p>
+        <p>Kembalian: <strong id="rincian-kembalian">—</strong></p>
+      </div>
+    </section>
+  </main>
+  <script src="/js/riwayat.js"></script>
+</body>
+</html>

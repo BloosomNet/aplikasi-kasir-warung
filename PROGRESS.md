@@ -70,6 +70,45 @@ Kekurangan saat ini (jujur):
 - Belum ada pencarian produk — itu Tahap 5.
 - Belum ada login dan belum ter-deploy.
 
+## Tahap 4 — Selesai: Riwayat transaksi dan laporan harian
+
+Yang sudah dibuat:
+- Fungsi baru di `src/models/Transaksi.js`: `lihatRiwayat` (daftar transaksi dalam rentang tanggal, lengkap dengan jumlah barang per transaksi), `lihatSatu` (satu transaksi beserta rincian barangnya), `laporanHarian` (jumlah transaksi dan omzet per tanggal), dan `produkTerlaris` (10 produk paling banyak terjual)
+- Pembantu `src/utils/rentangTanggal.js`: membaca dan memeriksa rentang tanggal dari permintaan — format harus YYYY-MM-DD, tanggal awal tidak boleh sesudah tanggal akhir, dan kalau tidak diisi dipakai 7 hari terakhir sampai hari ini
+- Pengatur laporan di `src/controllers/laporanController.js` dan rute `src/routes/laporan.js`: `GET /api/laporan/harian` dan `GET /api/laporan/terlaris`
+- Rute baru di `src/routes/transaksi.js`: `GET /api/transaksi` (daftar dengan filter `dari` dan `sampai`) dan `GET /api/transaksi/:id` (rincian, 404 kalau nomor tidak ada)
+- Halaman riwayat di `public/riwayat.html` dan `public/js/riwayat.js`: filter tanggal, ringkasan jumlah transaksi dan total omzet, tabel laporan harian, tabel produk terlaris, daftar transaksi yang bisa diketuk untuk melihat rincian barang, bayar, dan kembalian
+- Tautan "Riwayat & Laporan" di navigasi halaman Kelola Produk dan Kasir, plus CSS untuk baris filter, ringkasan, dan baris yang bisa diklik
+
+Cara kerja singkat:
+- Peramban meminta laporan harian, produk terlaris, dan daftar transaksi sekaligus dengan Fetch API, memakai rentang tanggal yang sama. Ringkasan dihitung dari laporan harian, supaya angkanya selalu sama dengan tabel.
+- Server menyaring transaksi berdasarkan tanggal dibuatnya (`DATE(dibuat_pada)`), lalu mengelompokkan per tanggal untuk omzet harian dan per nama produk untuk produk terlaris. Nama produk diambil dari `detail_transaksi`, jadi laporan tetap benar walau nama produk diubah nanti.
+
+Yang sudah diuji (basis data MariaDB/MySQL lokal):
+- Data uji: Kopi Sachet Rp5.000 dan Gula 1kg Rp17.000, lalu 2 transaksi hari ini (2 Kopi + 1 Gula total Rp27.000 bayar Rp50.000, dan 3 Kopi total Rp15.000 bayar Rp20.000)
+- `GET /api/transaksi?dari=2026-11-13&sampai=2026-11-13` mengembalikan 2 transaksi, yang terbaru dulu, lengkap dengan jumlah barang
+- `GET /api/transaksi/1` mengembalikan rincian benar: 2 Kopi dan 1 Gula, bayar Rp50.000, kembalian Rp23.000
+- `GET /api/laporan/harian` mengembalikan 13 Nov: 2 transaksi, omzet Rp42.000; tanpa parameter, rentang baku 7 hari terakhir dipakai
+- `GET /api/laporan/terlaris` mengembalikan Kopi 5 terjual Rp25.000 di urutan pertama, lalu Gula 1 terjual Rp17.000
+- Tanggal berformat salah ditolak 400, tanggal awal sesudah tanggal akhir ditolak 400, transaksi nomor 999 menghasilkan 404
+- Halaman `riwayat.html` dan `riwayat.js` dimuat dengan HTTP 200, tidak ada error di log server
+- Data uji dibersihkan, semua tabel kembali kosong
+
+Kekurangan saat ini (jujur):
+- Daftar transaksi dibatasi 100 baris terbaru, belum ada halaman berikutnya (pagination) — itu bisa jadi konsep baru di project berikutnya.
+- Laporan hanya berupa tabel, belum ada grafik batang atau garis.
+- Belum ada tombol unduh laporan (misalnya ke CSV) dan belum ada pencarian produk — itu bagian Tahap 5.
+- Belum ada login dan belum ter-deploy.
+
+## Rencana gabung dengan project lain
+
+Project ini dirancang supaya nanti bisa digabung dengan project selingan menjadi satu sistem manajemen UMKM:
+- Inti bersama yang sama di semua project: stack sama (Node + Express + MySQL), struktur MVC sama (`src/config`, `src/models`, `src/controllers`, `src/routes`, `public`, `database`), penamaan tabel dan kolom sama, format `.env` sama.
+- Tabel yang dipakai bersama: `produk` (id, nama, harga, stok, kategori), `transaksi` dan `detail_transaksi`, serta nanti tabel `pengguna` untuk login.
+- Pembagian peran: kasir mengurangi stok saat transaksi, inventaris menambah dan mengelola stok, katalog menampilkan produk yang sama ke pelanggan. Ketiganya memakai tabel `produk` yang sama, supaya nanti tinggal digabung jadi satu sistem: satu login, satu basis data, satu dashboard dengan modul kasir + inventaris + katalog.
+- Project yang berjalan paralel: inventaris-barang-warung (stok, barang masuk/keluar, stok menipis, supplier) dan katalog-produk-warung (katalog + pemesanan via WhatsApp).
+- Arah jangka panjang: kesulitan naik bertahap — setelah gabung jadi sistem UMKM, tambah modul yang lebih dalam (keuangan warung, laporan dan grafik, export data, pencarian/filter/pagination, multi-pengguna dan peran), menuju aplikasi nyata yang dipakai orang sungguhan. Tiap project tetap maksimal satu konsep baru dan tetap bisa dijelaskan ulang saat interview.
+
 ## Tahap berikutnya
 
-Tahap 4: Riwayat transaksi dan laporan harian — daftar transaksi, omzet harian, produk terlaris, dan filter tanggal.
+Tahap 5: Tampilan rapi di HP dan pencarian produk.

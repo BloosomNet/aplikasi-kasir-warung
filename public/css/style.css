@@ -114,4 +114,18 @@ th { background: #f4f1ea; }
 
 .berhasil { color: #2f6b4f; }
 
+/* Halaman riwayat dan laporan: filter tanggal, ringkasan, baris yang bisa diklik */
+.baris-filter {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.baris-filter label { flex: 1 1 160px; }
+
+.ringkasan p { font-size: 18px; }
+
+.baris-bisa-diklik { cursor: pointer; }
+.baris-bisa-diklik:hover { background: #f4f1ea; }
+
 .tombol-abu { background: #777; }

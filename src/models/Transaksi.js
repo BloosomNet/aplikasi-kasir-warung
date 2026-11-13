@@ -73,4 +73,76 @@ async function buatTransaksi(barang, bayar) {
   }
 }
 
-module.exports = { buatTransaksi };
+// Melihat daftar transaksi dalam rentang tanggal.
+// Setiap baris berisi jumlah barang yang dibeli, supaya daftar tetap ringkas.
+// dari dan sampai memakai format YYYY-MM-DD.
+async function lihatRiwayat(dari, sampai) {
+  const [baris] = await pool.query(
+    `SELECT t.id, t.total, t.bayar, t.kembalian, t.dibuat_pada,
+            COUNT(d.id) AS jumlah_item
+       FROM transaksi t
+       LEFT JOIN detail_transaksi d ON d.transaksi_id = t.id
+      WHERE DATE(t.dibuat_pada) BETWEEN ? AND ?
+      GROUP BY t.id
+      ORDER BY t.dibuat_pada DESC, t.id DESC
+      LIMIT 100`,
+    [dari, sampai]
+  );
+  return baris;
+}
+
+// Melihat satu transaksi beserta rincian barangnya.
+// Mengembalikan null kalau nomor transaksi tidak ada.
+async function lihatSatu(id) {
+  const [baris] = await pool.query(
+    'SELECT id, total, bayar, kembalian, dibuat_pada FROM transaksi WHERE id = ?',
+    [id]
+  );
+  const transaksi = baris[0];
+  if (!transaksi) {
+    return null;
+  }
+  const [rincian] = await pool.query(
+    `SELECT nama_produk, harga, jumlah, subtotal
+       FROM detail_transaksi
+      WHERE transaksi_id = ?
+      ORDER BY id ASC`,
+    [id]
+  );
+  transaksi.barang = rincian;
+  return transaksi;
+}
+
+// Laporan harian: untuk tiap tanggal, berapa transaksi dan berapa omzetnya.
+async function laporanHarian(dari, sampai) {
+  const [baris] = await pool.query(
+    `SELECT DATE(dibuat_pada) AS tanggal,
+            COUNT(*) AS jumlah_transaksi,
+            SUM(total) AS omzet
+       FROM transaksi
+      WHERE DATE(dibuat_pada) BETWEEN ? AND ?
+      GROUP BY DATE(dibuat_pada)
+      ORDER BY tanggal DESC`,
+    [dari, sampai]
+  );
+  return baris;
+}
+
+// Produk terlaris dalam rentang tanggal, diurutkan dari yang paling banyak terjual.
+async function produkTerlaris(dari, sampai) {
+  const [baris] = await pool.query(
+    `SELECT d.nama_produk,
+            SUM(d.jumlah) AS terjual,
+            SUM(d.subtotal) AS pendapatan
+       FROM detail_transaksi d
+       JOIN transaksi t ON t.id = d.transaksi_id
+      WHERE DATE(t.dibuat_pada) BETWEEN ? AND ?
+      GROUP BY d.nama_produk
+      ORDER BY terjual DESC, pendapatan DESC
+      LIMIT 10`,
+    [dari, sampai]
+  );
+  return baris;
+}
+
+module.exports = { buatTransaksi, lihatRiwayat, lihatSatu, laporanHarian, produkTerlaris };
