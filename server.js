@@ -19,8 +19,9 @@ app.get('/api/sehat', async (req, res) => {
   res.json({ status: 'ok', pesan: 'Server kasir warung berjalan' });
 });
 
-// Rute produk, kasir, dan laporan akan dipasang di tahap berikutnya
+// Rute produk dan kasir. Rute laporan dipasang di tahap berikutnya.
 app.use('/api/produk', require('./src/routes/produk'));
+app.use('/api/transaksi', require('./src/routes/transaksi'));
 
 app.listen(PORT, () => {
   console.log(`Server kasir warung berjalan di http://localhost:${PORT}`);

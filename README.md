@@ -10,7 +10,7 @@ Pemilik warung atau toko kecil yang ingin mencatat penjualan harian dengan rapi,
 
 - [x] Tahap 1: Kerangka aplikasi, server, dan koneksi basis data
 - [x] Tahap 2: Kelola produk (tambah, ubah, hapus, stok, harga)
-- [ ] Tahap 3: Kasir — keranjang belanja, total, kembalian, dan stok berkurang otomatis
+- [x] Tahap 3: Kasir — keranjang belanja, total, kembalian, dan stok berkurang otomatis
 - [ ] Tahap 4: Riwayat transaksi dan laporan harian
 - [ ] Tahap 5: Tampilan rapi di HP dan pencarian produk
 - [ ] Tahap 6: Login pemilik warung

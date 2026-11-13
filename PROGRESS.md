@@ -45,6 +45,31 @@ Kekurangan saat ini (jujur):
 - Belum ada fitur kasir, riwayat transaksi, laporan, login, dan belum ter-deploy.
 - Belum ada pencarian produk — itu bagian Tahap 5.
 
+## Tahap 3 — Selesai: Kasir
+
+Yang sudah dibuat:
+- Tabel baru di `database/schema.sql`: `transaksi` (total, bayar, kembalian) dan `detail_transaksi` (nama dan harga disalin saat transaksi, supaya riwayat tetap benar walau produk diubah nanti)
+- Model transaksi di `src/models/Transaksi.js`: menyimpan transaksi dalam satu transaksi basis data — simpan transaksi, simpan rincian, kurangi stok. Kalau ada langkah yang gagal, semua dibatalkan. Total dihitung ulang dari harga di basis data, dan baris produk dikunci selama transaksi supaya stok terakhir tidak terjual dua kali
+- Pengatur dan rute di `src/controllers/transaksiController.js` dan `src/routes/transaksi.js`: `POST /api/transaksi` dengan pemeriksaan keranjang kosong, jumlah tidak sah, dan bayar tidak sah
+- Halaman kasir di `public/kasir.html` dan `public/js/kasir.js`: pilih produk, keranjang dengan tombol tambah dan kurang jumlah, total otomatis, kolom bayar, kembalian otomatis, dan pesan berhasil berisi nomor transaksi, total, dan kembalian. Ada tautan bolak-balik antara halaman Kelola Produk dan Kasir
+
+Cara kerja singkat:
+- Peramban mengambil daftar produk, pengguna menambah produk ke keranjang yang disimpan di peramban. Total dihitung dari harga produk dikali jumlah.
+- Saat tombol Selesaikan Transaksi ditekan, peramban mengirim isi keranjang dan uang bayar ke `POST /api/transaksi`. Server menghitung ulang total dari basis data, memeriksa stok dan uang bayar, lalu menyimpan transaksi dan mengurangi stok dalam satu transaksi basis data.
+
+Yang sudah diuji (basis data MariaDB/MySQL lokal):
+- Transaksi berhasil: 2 Kopi Sachet + 1 Gula 1kg, total Rp27.000, bayar Rp50.000, kembalian Rp23.000, transaksi #1 tersimpan dengan 2 rincian
+- Stok sesudah transaksi: Kopi 20 menjadi 18, Gula 10 menjadi 9
+- Transaksi 100 Kopi ditolak 400 karena stok tidak cukup, dan stok tidak berubah
+- Transaksi 1 Kopi dengan bayar Rp1.000 ditolak 400 karena uang kurang
+- Keranjang kosong ditolak 400
+- Data uji dibersihkan, semua tabel kembali kosong
+
+Kekurangan saat ini (jujur):
+- Belum ada halaman riwayat transaksi dan laporan harian — itu Tahap 4.
+- Belum ada pencarian produk — itu Tahap 5.
+- Belum ada login dan belum ter-deploy.
+
 ## Tahap berikutnya
 
-Tahap 3: Kasir — keranjang belanja, hitung total dan kembalian, simpan transaksi, dan stok berkurang otomatis.
+Tahap 4: Riwayat transaksi dan laporan harian — daftar transaksi, omzet harian, produk terlaris, dan filter tanggal.

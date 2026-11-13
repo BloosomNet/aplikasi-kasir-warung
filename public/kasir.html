@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kasir — Kasir Warung</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="wadah">
+    <nav class="navigasi">
+      <a href="/">Kelola Produk</a>
+      <strong>Kasir</strong>
+    </nav>
+    <h1>Kasir</h1>
+    <p class="keterangan">Pilih produk, atur jumlahnya, lalu terima pembayaran.</p>
+    <p id="status">Memeriksa server...</p>
+
+    <section class="kartu">
+      <h2>Pilih Produk</h2>
+      <p id="pesan-produk" class="pesan" hidden></p>
+      <div id="daftar-pilih-produk"></div>
+      <p id="produk-kosong" hidden>Belum ada produk. Tambahkan dulu di halaman Kelola Produk.</p>
+    </section>
+
+    <section class="kartu">
+      <h2>Keranjang</h2>
+      <div class="bungkus-tabel">
+        <table>
+          <thead>
+            <tr>
+              <th>Produk</th>
+              <th>Harga</th>
+              <th>Jumlah</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="keranjang"></tbody>
+        </table>
+      </div>
+      <p id="keranjang-kosong">Keranjang masih kosong.</p>
+      <p class="total">Total: <strong id="total">Rp0</strong></p>
+    </section>
+
+    <section class="kartu">
+      <h2>Pembayaran</h2>
+      <label>
+        Uang bayar (Rp)
+        <input type="number" id="bayar" min="0" step="1" placeholder="Contoh: 50000">
+      </label>
+      <p>Kembalian: <strong id="kembalian">Rp0</strong></p>
+      <p id="pesan-bayar" class="pesan" hidden></p>
+      <p id="pesan-berhasil" class="berhasil" hidden></p>
+      <div class="baris-tombol">
+        <button type="button" id="tombol-bayar">Selesaikan Transaksi</button>
+        <button type="button" id="tombol-kosongkan" class="tombol-abu">Kosongkan Keranjang</button>
+      </div>
+    </section>
+  </main>
+  <script src="/js/kasir.js"></script>
+</body>
+</html>

@@ -91,3 +91,27 @@ th, td {
 }
 
 th { background: #f4f1ea; }
+
+/* Navigasi antar halaman dan halaman kasir */
+.navigasi {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.navigasi a { color: #2f6b4f; }
+
+.baris-produk {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.total { font-size: 18px; }
+
+.berhasil { color: #2f6b4f; }
+
+.tombol-abu { background: #777; }
