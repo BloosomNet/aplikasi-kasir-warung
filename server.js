@@ -24,6 +24,9 @@ app.use('/api/produk', require('./src/routes/produk'));
 app.use('/api/transaksi', require('./src/routes/transaksi'));
 app.use('/api/laporan', require('./src/routes/laporan'));
 
+// Bikin tabel kalau belum ada, biar langsung jalan pas deploy.
+require('./src/config/siapkanTabel')();
+
 app.listen(PORT, () => {
   console.log(`Server kasir warung berjalan di http://localhost:${PORT}`);
 });

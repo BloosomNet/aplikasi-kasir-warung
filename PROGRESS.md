@@ -154,9 +154,17 @@ Yang sudah diuji (server Express di port 3000, basis data MariaDB lokal):
 - Tidak ada error di log server; data uji dibersihkan (daftar produk kembali kosong), server dimatikan sesudah uji.
 
 Kekurangan saat ini (jujur):
-- Belum diuji di HP fisik dan belum ada tangkapan layar lebar 390px — di VM ini tidak ada peramban headless untuk mengambilnya. Yang diverifikasi baru aturan CSS-nya dan halaman yang dimuat server. Kalau di HP Rid nanti ada yang masih sempit, kabari, akan diperbaiki.
+- Belum diuji di HP fisik, tapi tangkapan layar lebar 390px halaman kasir udah diambil 2026-11-14 (Chrome headless udah diinstal di VM) dan tampilannya rapi, tombol Tambah selebar layar.
 - Belum ada login dan belum ter-deploy.
+
+## Siap deploy: tabel kebikin sendiri pas server nyala
+
+Rid minta deploy dimajuin biar bisa dibuka dari browser. Supaya pas deploy ke Railway nggak perlu jalanin schema.sql manual, server sekarang bikin tabel sendiri waktu nyala: `src/config/siapkanTabel.js` jalanin tiga `CREATE TABLE IF NOT EXISTS` (produk, transaksi, detail_transaksi) — isinya sama persis kayak `database/schema.sql`. Kalau basis data belum siap (MySQL Railway masih nyala), dicoba lagi tiap 5 detik, maksimal 12 kali, terus server tetap jalan. Dipanggil di `server.js` sebelum `listen`.
+
+Yang sudah diuji (server Express di port 3000, basis data MariaDB lokal):
+- Server di-restart dengan kode baru, log nampilin "Tabel sudah siap.", `/api/sehat` ok, `/api/produk` tetap ngembaliin 4 produk contoh.
+- Nggak ada error di log server.
 
 ## Tahap berikutnya
 
-Tahap 6: Login pemilik warung.
+Tahap 7 (deploy ke Railway) dikerjain duluan atas permintaan Rid, baru Tahap 6 login sesudahnya.
