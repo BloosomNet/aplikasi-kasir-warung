@@ -32,4 +32,10 @@ async function buat(namaPengguna, kataSandi) {
   return cariBerdasarkanId(hasil.insertId);
 }
 
-module.exports = { cariBerdasarkanNama, cariBerdasarkanId, jumlahPengguna, buat };
+// Mengganti kata sandi pengguna, di-hash dulu sebelum disimpan.
+async function ubahKataSandi(id, kataSandiBaru) {
+  const hash = buatHash(kataSandiBaru);
+  await pool.query('UPDATE pengguna SET kata_sandi = ? WHERE id = ?', [hash, id]);
+}
+
+module.exports = { cariBerdasarkanNama, cariBerdasarkanId, jumlahPengguna, buat, ubahKataSandi };

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ganti Kata Sandi — Kasir Warung</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="wadah">
+    <nav class="navigasi">
+      <a href="/">Kelola Produk</a>
+      <a href="/kasir.html">Kasir</a>
+      <a href="/riwayat.html">Riwayat &amp; Laporan</a>
+      <span id="info-masuk" class="info-masuk"></span>
+    </nav>
+    <h1>Ganti Kata Sandi</h1>
+    <p class="keterangan">Isi kata sandi lama dulu, lalu kata sandi barunya. Minimal 6 huruf.</p>
+
+    <section class="kartu">
+      <form id="form-ganti-sandi">
+        <label>
+          Kata sandi lama
+          <input type="password" id="kata-sandi-lama" required autocomplete="current-password" placeholder="Kata sandi yang sekarang">
+        </label>
+        <label>
+          Kata sandi baru
+          <input type="password" id="kata-sandi-baru" required minlength="6" autocomplete="new-password" placeholder="Minimal 6 huruf">
+        </label>
+        <label>
+          Ulangi kata sandi baru
+          <input type="password" id="kata-sandi-baru-ulang" required minlength="6" autocomplete="new-password" placeholder="Ketik ulang kata sandi baru">
+        </label>
+        <p id="pesan-ganti-sandi" class="pesan" hidden></p>
+        <div class="baris-tombol">
+          <button type="submit" id="tombol-ganti-sandi">Ganti Kata Sandi</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script src="/js/sesi.js"></script>
+  <script src="/js/ganti-kata-sandi.js"></script>
+</body>
+</html>

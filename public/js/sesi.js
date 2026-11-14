@@ -10,9 +10,12 @@ if (infoMasuk) {
       return tanggapan.json();
     })
     .then((data) => {
-      // Sudah masuk: tampilkan nama pengguna dan tombol keluar.
+      // Sudah masuk: tampilkan nama pengguna, tautan ganti kata sandi, dan tombol keluar.
       const teksNama = document.createElement('span');
       teksNama.textContent = `Masuk sebagai ${data.pengguna.nama_pengguna}`;
+      const tautanGantiSandi = document.createElement('a');
+      tautanGantiSandi.href = '/ganti-kata-sandi.html';
+      tautanGantiSandi.textContent = 'Ganti kata sandi';
       const tombolKeluar = document.createElement('button');
       tombolKeluar.type = 'button';
       tombolKeluar.textContent = 'Keluar';
@@ -25,7 +28,7 @@ if (infoMasuk) {
         }
         window.location.reload();
       });
-      infoMasuk.append(teksNama, tombolKeluar);
+      infoMasuk.append(teksNama, tautanGantiSandi, tombolKeluar);
     })
     .catch(() => {
       // Belum masuk: tampilkan tautan ke halaman Masuk.

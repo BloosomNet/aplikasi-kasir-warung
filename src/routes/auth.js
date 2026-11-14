@@ -7,5 +7,6 @@ const perluLogin = require('../middleware/perluLogin');
 router.post('/masuk', authController.masuk);
 router.post('/keluar', authController.keluar);
 router.get('/saya', perluLogin, authController.saya);
+router.post('/ganti-kata-sandi', perluLogin, authController.gantiKataSandi);
 
 module.exports = router;

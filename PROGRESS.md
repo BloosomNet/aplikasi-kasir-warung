@@ -240,10 +240,30 @@ Yang sudah diuji (basis data MariaDB lokal, server Express di port 3000):
 - Data uji dibersihkan, tabel produk kembali kosong, server dimatikan sesudah uji.
 
 Kekurangan saat ini (jujur):
-- Akun bawaan "pemilik" / "warung123" masih harus diganti sebelum dipakai beneran. Belum ada fitur ganti kata sandi dari aplikasi — itu potongan berikutnya (6c).
+- Akun bawaan "pemilik" / "warung123" masih harus diganti sebelum dipakai beneran — sekarang sudah bisa diganti dari aplikasi (6c).
 - Keluar cuma menghapus cookie di peramban; tokennya sendiri masih sah sampai kadaluarsa 12 jam kalau ada yang sempat menyalinnya (sudah dicatat di 6a, belum berubah).
 - `SESSION_SECRET` masih pakai nilai bawaan kalau nggak diisi di .env. Di Railway wajib diisi yang acak dan panjang.
 
+## Tahap 6c: Ganti kata sandi pemilik dari aplikasi
+
+- Endpoint baru `POST /api/ganti-kata-sandi`, dijaga `perluLogin` — yang belum masuk ditolak 401. Badannya `kata_sandi_lama` + `kata_sandi_baru`. Kata sandi lama harus cocok dulu, yang baru minimal 6 huruf dan harus beda dengan yang lama. Kalau lolos, hash baru disimpan lewat `Pengguna.ubahKataSandi` (hash scrypt yang sama seperti waktu bikin akun).
+- Halaman baru `public/ganti-kata-sandi.html` dan `public/js/ganti-kata-sandi.js`: formulir sandi lama, sandi baru, ulangi sandi baru. Ulangannya dicek dulu di peramban sebelum dikirim. Kalau belum masuk, halaman ini langsung lempar ke halaman Masuk. Sesudah berhasil, pesannya bilang sesi lain masih bisa dipakai sampai habis waktunya.
+- Tautan "Ganti kata sandi" ditambah di `public/js/sesi.js`, muncul di navigasi semua halaman kalau sudah masuk, di samping nama pengguna dan tombol Keluar.
+
+Cara kerja singkat:
+- Peramban kirim sandi lama + baru ke `POST /api/ganti-kata-sandi` (cookie sesi ikut terkirim). Server ambil akun dari `req.pengguna.id`, cocokkan sandi lama dengan hash yang tersimpan, kalau cocok simpan hash baru. Kata sandi lama langsung nggak berlaku lagi, yang baru langsung bisa dipakai masuk.
+
+Yang sudah diuji (basis data MariaDB lokal, server Express di port 3000):
+- `POST /api/ganti-kata-sandi` tanpa cookie 401; sandi lama salah 401 "Kata sandi lama salah"; baru kurang dari 6 huruf 400; baru sama dengan lama 400; yang benar 200 "Kata sandi sudah diganti".
+- Sesudah diganti, masuk pakai sandi lama 401, masuk pakai sandi baru 200. Kata sandi lokal dikembalikan lagi ke "warung123" biar sama seperti bawaan, dan masuk pakai itu 200 lagi.
+- `GET /ganti-kata-sandi.html` dan `/js/ganti-kata-sandi.js` 200; regresi `/masuk.html`, `/api/sehat`, `/api/produk` 200. Tidak ada error di log server.
+- Catatan: MariaDB lokal mati lagi sebelum uji — db dan user kasir hilang, dibuat ulang dari .env lokal, lalu server dinyalakan ulang (percobaan pertama kehabisan 12x retry karena db belum ada). Bukan masalah kode.
+- Data uji dibersihkan, tabel produk kembali kosong.
+
+Kekurangan saat ini (jujur):
+- Sesi lain yang masih aktif (misalnya di hp lain) tetap bisa dipakai sampai kadaluarsa 12 jam sesudah kata sandi diganti — tokennya nggak disimpan di server, jadi nggak bisa dicabut satu-satu. Kalau mau benar-benar aman, keluar dulu di semua perangkat sesudah ganti sandi.
+- `SESSION_SECRET` masih pakai nilai bawaan kalau nggak diisi di .env. Di Railway sudah diganti yang acak.
+
 ## Tahap berikutnya
 
-Tahap 6c: Ganti kata sandi pemilik dari aplikasi (biar akun bawaan "pemilik" / "warung123" bisa diganti tanpa utak-atik .env). Setelah itu Tahap 6 selesai, dan semua tahap kasir sudah beres.
+Tahap 6 selesai — semua tahap kasir sudah beres (1 kerangka, 2 kelola produk, 3 kasir, 4 riwayat + laporan, 5 pencarian + tampilan HP, 6 login, 7 deploy Railway). Tahap berikutnya: usulkan ide project berikutnya dan tunggu Farid bilang "gas".

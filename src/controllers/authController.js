@@ -40,4 +40,32 @@ function saya(req, res) {
   res.json({ masuk: true, pengguna: req.pengguna });
 }
 
-module.exports = { masuk, keluar, saya };
+// Ganti kata sandi: yang masuk harus tahu kata sandi lamanya dulu,
+// kata sandi baru minimal 6 huruf dan harus beda dengan yang lama.
+// Rute ini sudah dijaga perluLogin, jadi req.pengguna pasti ada.
+async function gantiKataSandi(req, res) {
+  const kataSandiLama = req.body && typeof req.body.kata_sandi_lama === 'string' ? req.body.kata_sandi_lama : '';
+  const kataSandiBaru = req.body && typeof req.body.kata_sandi_baru === 'string' ? req.body.kata_sandi_baru : '';
+  if (!kataSandiLama || !kataSandiBaru) {
+    return res.status(400).json({ pesan: 'Kata sandi lama dan kata sandi baru wajib diisi' });
+  }
+  if (kataSandiBaru.length < 6) {
+    return res.status(400).json({ pesan: 'Kata sandi baru minimal 6 huruf' });
+  }
+  if (kataSandiBaru === kataSandiLama) {
+    return res.status(400).json({ pesan: 'Kata sandi baru harus beda dengan yang lama' });
+  }
+  try {
+    const pengguna = await Pengguna.cariBerdasarkanId(req.pengguna.id);
+    if (!pengguna || !cocok(kataSandiLama, pengguna.kata_sandi)) {
+      return res.status(401).json({ pesan: 'Kata sandi lama salah' });
+    }
+    await Pengguna.ubahKataSandi(pengguna.id, kataSandiBaru);
+    res.json({ pesan: 'Kata sandi sudah diganti' });
+  } catch (kesalahan) {
+    console.error(kesalahan);
+    res.status(500).json({ pesan: 'Gagal mengganti kata sandi' });
+  }
+}
+
+module.exports = { masuk, keluar, saya, gantiKataSandi };
