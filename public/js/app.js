@@ -128,6 +128,11 @@ formProduk.addEventListener('submit', async (kejadian) => {
     });
     const hasil = await tanggapan.json();
     if (!tanggapan.ok) {
+      // 401 berarti belum masuk atau sesinya habis — arahkan ke halaman Masuk.
+      if (tanggapan.status === 401) {
+        tampilkanPesan(pesanForm, 'Belum masuk. Masuk dulu lewat halaman Masuk di atas.');
+        return;
+      }
       tampilkanPesan(pesanForm, hasil.pesan || 'Produk gagal disimpan.');
       return;
     }
@@ -150,6 +155,10 @@ async function hapusProduk(item) {
     const tanggapan = await fetch(`/api/produk/${item.id}`, { method: 'DELETE' });
     const hasil = await tanggapan.json();
     if (!tanggapan.ok) {
+      if (tanggapan.status === 401) {
+        tampilkanPesan(pesanDaftar, 'Belum masuk. Masuk dulu lewat halaman Masuk di atas.');
+        return;
+      }
       tampilkanPesan(pesanDaftar, hasil.pesan || 'Produk gagal dihapus.');
       return;
     }

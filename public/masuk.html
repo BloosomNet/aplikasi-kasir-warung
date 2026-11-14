@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk — Kasir Warung</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main class="wadah">
+    <nav class="navigasi">
+      <a href="/">Kelola Produk</a>
+      <a href="/kasir.html">Kasir</a>
+      <a href="/riwayat.html">Riwayat &amp; Laporan</a>
+      <span id="info-masuk" class="info-masuk"></span>
+    </nav>
+    <h1>Masuk</h1>
+    <p class="keterangan">Masuk dulu sebagai pemilik warung supaya bisa tambah produk dan mencatat penjualan.</p>
+
+    <section class="kartu">
+      <form id="form-masuk">
+        <label>
+          Nama pengguna
+          <input type="text" id="nama-pengguna" required maxlength="50" autocomplete="username" placeholder="Contoh: pemilik">
+        </label>
+        <label>
+          Kata sandi
+          <input type="password" id="kata-sandi" required autocomplete="current-password" placeholder="Kata sandi pemilik">
+        </label>
+        <p id="pesan-masuk" class="pesan" hidden></p>
+        <div class="baris-tombol">
+          <button type="submit" id="tombol-masuk">Masuk</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script src="/js/sesi.js"></script>
+  <script src="/js/masuk.js"></script>
+</body>
+</html>

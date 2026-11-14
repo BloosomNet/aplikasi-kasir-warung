@@ -196,6 +196,10 @@ document.getElementById('tombol-bayar').addEventListener('click', async () => {
     });
     const hasil = await tanggapan.json();
     if (!tanggapan.ok) {
+      if (tanggapan.status === 401) {
+        tampilkanPesan(pesanBayar, 'Belum masuk. Masuk dulu lewat halaman Masuk di atas.');
+        return;
+      }
       tampilkanPesan(pesanBayar, hasil.pesan || 'Transaksi gagal disimpan.');
       return;
     }

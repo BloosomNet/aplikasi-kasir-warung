@@ -214,6 +214,36 @@ Kekurangan saat ini (jujur):
 - Akun bawaan "pemilik" / "warung123" harus diganti sebelum dipakai beneran. Belum ada fitur ganti kata sandi dari aplikasi — itu potongan berikutnya setelah halaman login, atau sekalian bareng 6b.
 - Masih satu akun pemilik saja, belum ada peran lain (misalnya kasir biasa) — itu rencana modul multi-pengguna nanti, bukan tahap ini.
 
+## Tahap 6b — Selesai: Halaman masuk dan tombol keluar
+
+Yang sudah dibuat:
+- Halaman masuk di `public/masuk.html` dan `public/js/masuk.js`: formulir nama pengguna + kata sandi, dikirim ke `POST /api/masuk`. Kalau berhasil langsung pindah ke halaman kelola produk. Kalau sudah masuk, halaman ini langsung mengalihkan ke halaman utama, jadi nggak perlu isi formulir dua kali. Pesan gagalnya diambil dari server (sengaja dibuat sama untuk nama salah maupun kata sandi salah).
+- Skrip bersama `public/js/sesi.js`, dipakai di semua halaman (kelola produk, kasir, riwayat, masuk): cek `GET /api/saya` waktu halaman dibuka. Kalau sudah masuk, tampilkan "Masuk sebagai ..." dan tombol Keluar di kanan navigasi. Kalau belum masuk, tampilkan tautan "Masuk".
+- Tombol Keluar: kirim `POST /api/keluar`, lalu muat ulang halaman. Cookie sesi dihapus server, jadi sesudah keluar tautan "Masuk" muncul lagi.
+- Navigasi di `public/index.html`, `public/kasir.html`, dan `public/riwayat.html` sekarang punya tempat khusus `<span id="info-masuk">` di kanan, plus skrip `sesi.js`.
+- Gaya baru di `public/css/style.css`: `.info-masuk` (di kanan navigasi, nama + tombol sejajar) dan `.tombol-keluar` (abu-abu, biar beda sama tombol utama).
+- Pesan 401 yang lebih jelas di `public/js/app.js` dan `public/js/kasir.js`: kalau simpan produk atau transaksi ditolak karena belum masuk, pesannya sekarang "Belum masuk. Masuk dulu lewat halaman Masuk di atas." — bukan lagi pesan umum dari server.
+
+Cara kerja singkat:
+- Peramban cek sesi lewat `GET /api/saya` (cookie dikirim otomatis karena satu domain yang sama). Kalau sah, server ngembaliin nama pengguna; kalau nggak, dijawab 401 dan halaman menampilkan tautan Masuk.
+- Masuk: formulir kirim nama + kata sandi ke `POST /api/masuk`, server pasang cookie "sesi" (httpOnly), peramban pindah ke halaman utama. Keluar: `POST /api/keluar` hapus cookie, halaman dimuat ulang.
+
+Yang sudah diuji (basis data MariaDB lokal, server Express di port 3000):
+- Server nyala, akun pemilik "pemilik" dibuat otomatis seperti biasa, tabel pengguna ada.
+- `GET /masuk.html` dan `/js/masuk.js` dan `/js/sesi.js` dimuat HTTP 200; ketiga halaman utama juga tetap 200.
+- `POST /api/masuk` kata sandi salah 401 dengan pesan "Nama pengguna atau kata sandi salah"; yang benar 200 + cookie sesi.
+- `GET /api/saya` tanpa cookie 401, pakai cookie 200 dan ngembaliin nama pengguna "pemilik".
+- `POST /api/keluar` 200, cookie kehapus; sesudah keluar `GET /api/saya` jadi 401 lagi.
+- `POST /api/produk` tanpa cookie tetap 401; pakai cookie 201 — Kopi Sachet Rp5.000 stok 20 kebikin, lalu dihapus lagi.
+- Regresi: `/`, `/kasir.html`, `/riwayat.html`, `/css/style.css`, `/api/produk`, `/api/laporan/harian`, dan `/api/sehat` semuanya 200. Tidak ada error di log server.
+- Catatan: MariaDB lokal sempat mati lagi sebelum uji (kemarin juga begitu) — dinyalain dulu, baru server bisa nyambung. Bukan masalah kode, cuma setup lokal yang ke-reset tiap VM mati.
+- Data uji dibersihkan, tabel produk kembali kosong, server dimatikan sesudah uji.
+
+Kekurangan saat ini (jujur):
+- Akun bawaan "pemilik" / "warung123" masih harus diganti sebelum dipakai beneran. Belum ada fitur ganti kata sandi dari aplikasi — itu potongan berikutnya (6c).
+- Keluar cuma menghapus cookie di peramban; tokennya sendiri masih sah sampai kadaluarsa 12 jam kalau ada yang sempat menyalinnya (sudah dicatat di 6a, belum berubah).
+- `SESSION_SECRET` masih pakai nilai bawaan kalau nggak diisi di .env. Di Railway wajib diisi yang acak dan panjang.
+
 ## Tahap berikutnya
 
-Tahap 6b: Halaman login dan tombol keluar.
+Tahap 6c: Ganti kata sandi pemilik dari aplikasi (biar akun bawaan "pemilik" / "warung123" bisa diganti tanpa utak-atik .env). Setelah itu Tahap 6 selesai, dan semua tahap kasir sudah beres.

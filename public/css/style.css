@@ -130,6 +130,20 @@ th { background: #f4f1ea; }
 
 .navigasi a { color: #2f6b4f; }
 
+/* Info sesi di kanan navigasi: nama pengguna + tombol keluar, atau tautan Masuk */
+.info-masuk {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  line-height: 1.4;
+  color: #555;
+}
+
+.tombol-keluar { background: #777; }
+.tombol-keluar:hover { background: #666; }
+
 .baris-produk {
   display: flex;
   justify-content: space-between;
