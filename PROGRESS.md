@@ -177,6 +177,43 @@ Deploy dimajuin atas permintaan Rid biar aplikasinya bisa dibuka dari browser, p
 
 Yang belum: Tahap 6 login pemilik warung tetap jadi tahap berikutnya; habis itu tinggal deploy ulang, Railway otomatis deploy tiap push ke main.
 
+## Tahap 6a — Selesai: Login di server (backend)
+
+Tahap 6 dipecah, yang ini baru bagian servernya. Halaman loginnya nyusul di potongan berikut.
+
+Yang sudah dibuat:
+- Tabel baru `pengguna` di `database/schema.sql` dan di `src/config/siapkanTabel.js` — kolomnya id, nama_pengguna (unik), kata_sandi, dibuat_pada. Namanya sama kayak rencana di PROGRESS, biar nanti gampang digabung sama inventaris dan katalog.
+- `src/utils/kataSandi.js`: kata sandi di-hash pakai scrypt bawaan Node (garam acak tiap kata sandi, hasilnya "garam:hash"). Nggak ada paket baru yang dipasang. Pengecekannya pakai timingSafeEqual supaya waktunya selalu sama.
+- `src/models/Pengguna.js`: cari pengguna dari nama atau id, hitung jumlah pengguna, dan bikin pengguna baru (kata sandinya langsung di-hash sebelum disimpan).
+- `src/utils/sesi.js`: sesi login berupa token yang ditandatangani HMAC, disimpan di cookie httpOnly (JavaScript di peramban nggak bisa baca). Isinya id, nama pengguna, dan waktu kadaluarsa 12 jam. Sesi nggak disimpan di basis data — buat warung yang servernya cuma satu, ini paling gampang dijelasin.
+- `src/controllers/authController.js` dan `src/routes/auth.js`: `POST /api/masuk`, `POST /api/keluar`, `GET /api/saya`. Pesan gagal masuk sengaja dibuat sama untuk nama salah maupun kata sandi salah, biar orang luar nggak bisa nebak nama pengguna mana yang ada.
+- `src/middleware/perluLogin.js`: penjaga rute, baca cookie "sesi", periksa tokennya, kalau sah datanya ditempel di req.pengguna. Kalau belum masuk, dijawab 401.
+- Akun pemilik pertama dibuat otomatis pas server pertama kali nyala (di `siapkanPemilik()` dalam siapkanTabel.js), kalau tabel pengguna masih kosong. Nama dan kata sandinya dari .env (`OWNER_USER` dan `OWNER_PASS`), kalau nggak diisi pakai bawaan "pemilik" / "warung123". Kuncinya juga ditambah di `.env.example`, sama rahasia sesi (`SESSION_SECRET`).
+- Rute tulis sekarang dikunci: tambah/ubah/hapus produk dan bikin transaksi cuma bisa kalau sudah masuk. Lihat produk, riwayat, dan laporan tetap terbuka.
+
+Cara kerja singkat:
+- Pemilik kirim nama pengguna dan kata sandi ke `POST /api/masuk`. Server cari penggunanya, cek hash kata sandinya, kalau cocok server kasih cookie "sesi" berisi token bertanda tangan.
+- Tiap permintaan ke rute tulis, `perluLogin` baca cookie itu, periksa tanda tangannya dan masa berlakunya. Tokennya sah baru permintaan diteruskan; kalau nggak, ditolak 401.
+- `POST /api/keluar` menghapus cookie sesi di peramban.
+
+Yang sudah diuji (basis data MariaDB lokal, server Express di port 3000):
+- Server nyala, log "Tabel sudah siap." dan "Akun pemilik 'pemilik' sudah dibuat...". Tabel `pengguna` ada, isinya 1 akun, kata sandinya tersimpan sebagai hash (bukan "warung123" apa adanya).
+- `POST /api/masuk` kata sandi salah dijawab 401; yang benar dijawab 200 dan ngasih cookie sesi.
+- `GET /api/saya` tanpa cookie 401, pakai cookie 200 dan ngembaliin id + nama pengguna.
+- `POST /api/produk` tanpa cookie 401, pakai cookie 201 — Kopi Sachet Rp5.000 stok 20 kebikin.
+- `POST /api/transaksi` tanpa cookie 401; pakai cookie 201 — 2 Kopi total Rp10.000, bayar Rp20.000, kembalian Rp10.000, stok 20 jadi 18. (Uji pertama sempat 400 "Keranjang masih kosong" karena body yang dikirim pakai nama kolom "keranjang", padahal controllernya minta "barang" — salah di perintah ujinya, bukan di kode. Sesudah dibenerin, lolos.)
+- Token yang dipalsukan ditolak 401. `PUT` dan `DELETE /api/produk/1` tanpa cookie dua-duanya 401. `POST /api/keluar` 200 dan cookie kehapus.
+- Regresi: halaman `/`, `/kasir.html`, `/riwayat.html`, `/css/style.css`, `/api/produk`, `/api/laporan/harian`, dan `/api/transaksi` semuanya 200. Tidak ada error di log server.
+- Catatan dari uji: MariaDB lokal sempat mati dan user basis data `kasir` di .env belum ada di server lokal (baru ada user root) — dibikin dulu user + databasenya, baru server bisa nyambung. Bukan masalah kode, cuma setup lokal yang ke-reset.
+- Data uji dibersihkan, tabel produk dan transaksi kembali kosong, server dimatikan sesudah uji.
+
+Kekurangan saat ini (jujur):
+- Belum ada halaman loginnya — jadi dari peramban, tambah produk dan transaksi belum bisa dipakai sampai Tahap 6b. Buat sekarang masuk cuma bisa lewat curl.
+- Keluar cuma menghapus cookie di peramban; tokennya sendiri masih sah sampai kadaluarsa 12 jam kalau ada yang sempat menyalinnya. Buat warung kecil masih oke, tapi kalau mau logout beneran dari sisi server, sesi harus disimpan di basis data — itu bisa jadi perbaikan nanti.
+- `SESSION_SECRET` masih pakai nilai bawaan kalau nggak diisi di .env. Di Railway wajib diisi yang acak dan panjang, kalau nggak tokennya gampang dipalsukan.
+- Akun bawaan "pemilik" / "warung123" harus diganti sebelum dipakai beneran. Belum ada fitur ganti kata sandi dari aplikasi — itu potongan berikutnya setelah halaman login, atau sekalian bareng 6b.
+- Masih satu akun pemilik saja, belum ada peran lain (misalnya kasir biasa) — itu rencana modul multi-pengguna nanti, bukan tahap ini.
+
 ## Tahap berikutnya
 
-Tahap 6: Login pemilik warung.
+Tahap 6b: Halaman login dan tombol keluar.

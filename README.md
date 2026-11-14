@@ -16,6 +16,7 @@ Pemilik warung atau toko kecil yang ingin mencatat penjualan harian dengan rapi,
   - [x] Tahap 5a: Pencarian produk di halaman Kelola Produk dan Kasir
   - [x] Tahap 5b: Tampilan rapi di HP
 - [ ] Tahap 6: Login pemilik warung
+  - [x] Tahap 6a: Login di server — tabel pengguna, kata sandi di-hash, sesi pakai cookie, rute tulis dikunci
 - [x] Tahap 7: Deploy online
 
 ## Teknologi yang dipakai

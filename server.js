@@ -19,10 +19,11 @@ app.get('/api/sehat', async (req, res) => {
   res.json({ status: 'ok', pesan: 'Server kasir warung berjalan' });
 });
 
-// Rute produk, kasir, dan laporan.
+// Rute produk, kasir, laporan, dan login.
 app.use('/api/produk', require('./src/routes/produk'));
 app.use('/api/transaksi', require('./src/routes/transaksi'));
 app.use('/api/laporan', require('./src/routes/laporan'));
+app.use('/api', require('./src/routes/auth'));
 
 // Bikin tabel kalau belum ada, biar langsung jalan pas deploy.
 require('./src/config/siapkanTabel')();

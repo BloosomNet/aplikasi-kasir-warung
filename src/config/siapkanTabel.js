@@ -1,6 +1,7 @@
 // Bikin tabel sendiri pas server nyala, biar pas deploy ke Railway
 // nggak perlu jalanin schema.sql manual. Kalau tabel udah ada, dilewatin.
 const pool = require('./database');
+const Pengguna = require('../models/Pengguna');
 
 const buatTabel = [
   `CREATE TABLE IF NOT EXISTS produk (
@@ -29,7 +30,32 @@ const buatTabel = [
     FOREIGN KEY (transaksi_id) REFERENCES transaksi(id),
     FOREIGN KEY (produk_id) REFERENCES produk(id)
   )`,
+  // Akun pemilik warung untuk login. Kata sandi disimpan sebagai hash,
+  // bukan teks aslinya — lihat src/utils/kataSandi.js.
+  `CREATE TABLE IF NOT EXISTS pengguna (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nama_pengguna VARCHAR(50) NOT NULL UNIQUE,
+    kata_sandi VARCHAR(255) NOT NULL,
+    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`,
 ];
+
+// Akun pemilik pertama: dibuat otomatis kalau tabel pengguna masih kosong,
+// supaya warung langsung bisa masuk setelah instalasi. Nama dan kata sandi
+// diambil dari .env (OWNER_USER dan OWNER_PASS), kalau nggak diisi
+// pakai bawaan "pemilik" / "warung123" — ganti dulu sebelum dipakai beneran.
+async function siapkanPemilik() {
+  try {
+    const jumlah = await Pengguna.jumlahPengguna();
+    if (jumlah > 0) return;
+    const nama = process.env.OWNER_USER || 'pemilik';
+    const sandi = process.env.OWNER_PASS || 'warung123';
+    await Pengguna.buat(nama, sandi);
+    console.log('Akun pemilik "' + nama + '" sudah dibuat, ganti kata sandinya sebelum dipakai beneran.');
+  } catch (err) {
+    console.log('Gagal bikin akun pemilik:', err.message);
+  }
+}
 
 // Coba bikin tabel, kalau basis data belum siap (misal MySQL Railway
 // masih nyala), tunggu bentar terus coba lagi. Maksimal 12 kali.
@@ -40,6 +66,7 @@ async function siapkanTabel() {
         await pool.query(sql);
       }
       console.log('Tabel sudah siap.');
+      await siapkanPemilik();
       return;
     } catch (err) {
       console.log(`Basis data belum siap (percobaan ${percobaan}/12), coba lagi 5 detik lagi...`);

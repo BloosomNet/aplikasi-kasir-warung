@@ -35,3 +35,12 @@ CREATE TABLE IF NOT EXISTS detail_transaksi (
   FOREIGN KEY (transaksi_id) REFERENCES transaksi(id),
   FOREIGN KEY (produk_id) REFERENCES produk(id)
 );
+
+-- Akun pemilik warung untuk login.
+-- Kata sandi disimpan sebagai hash scrypt, bukan teks aslinya.
+CREATE TABLE IF NOT EXISTS pengguna (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nama_pengguna VARCHAR(50) NOT NULL UNIQUE,
+  kata_sandi VARCHAR(255) NOT NULL,
+  dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
