@@ -60,6 +60,9 @@ async function muatProduk() {
 
       const selStok = document.createElement('td');
       selStok.textContent = item.stok;
+      // Stok menipis (5 ke bawah) dan habis langsung kelihatan warnanya.
+      if (item.stok === 0) selStok.className = 'stok-habis';
+      else if (item.stok <= 5) selStok.className = 'stok-tipis';
       baris.appendChild(selStok);
 
       const selKategori = document.createElement('td');

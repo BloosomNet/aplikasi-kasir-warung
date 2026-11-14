@@ -264,6 +264,31 @@ Kekurangan saat ini (jujur):
 - Sesi lain yang masih aktif (misalnya di hp lain) tetap bisa dipakai sampai kadaluarsa 12 jam sesudah kata sandi diganti — tokennya nggak disimpan di server, jadi nggak bisa dicabut satu-satu. Kalau mau benar-benar aman, keluar dulu di semua perangkat sesudah ganti sandi.
 - `SESSION_SECRET` masih pakai nilai bawaan kalau nggak diisi di .env. Di Railway sudah diganti yang acak.
 
+## Tahap 8: Poles tampilan biar lebih enak dipakai
+
+Atas permintaan Farid: tampilan kasir dibuat lebih bagus dan lebih nyaman dipakai, semua halaman sekaligus. Yang diubah kebanyakan cuma `public/css/style.css`, ditambah sedikit HTML dan JS.
+
+- Navigasi sekarang lengket di atas (sticky) — gulir ke bawah pun tetap bisa pindah halaman. Halaman yang sedang dibuka jadi pil hijau penuh, yang lain pil biasa.
+- Kartu lebih lembut: sudut membulat 16px, bayangan halus, warna kertas hangat. Judul bagian dikasih garis hijau di kiri.
+- Kolom isian: waktu diketik, garisnya jadi hijau dan ada lingkaran lembut di sekelilingnya, jadi ketahuan kolom mana yang sedang diisi.
+- Tombol utama hijau ada bayangannya, waktu dipegang sedikit naik; tombol kedua (Batal, Kosongkan, Keluar) diubah jadi putih bergaris supaya tombol utama langsung kelihatan.
+- Pesan gagal dan berhasil sekarang berupa kotak berwarna (merah / hijau) dengan garis di kiri, bukan teks polos.
+- Total keranjang di halaman Kasir jadi bar hijau gelap yang besar — langsung kelihatan. Baris pilih produk jadi kartu kecil, waktu disentuh garisnya jadi hijau.
+- Ringkasan di halaman Riwayat jadi dua kartu angka berdampingan: jumlah transaksi dan total omzet yang besar dan hijau.
+- Tabel: judul kolom huruf kecil kapital, baris selang-seling, waktu disentuh barisnya berubah warna, dibungkus kotak membulat.
+- Stok di tabel sekarang berwarna: stok 5 ke bawah kuning tebal, stok habis merah tebal (tambah kecil di `public/js/app.js`).
+- Status server jadi pil kecil hijau. Halaman Masuk dan Ganti Kata Sandi kartunya lebih sempit dan di tengah, plus ada tautan "Kembali ke Beranda".
+
+Yang sudah diuji (basis data MariaDB lokal, server Express di port 3000):
+- Semua halaman dan berkas baru 200: `/`, `/kasir.html`, `/riwayat.html`, `/masuk.html`, `/ganti-kata-sandi.html`, `/css/style.css`, semua JS. `node --check` untuk `app.js` lolos.
+- CSS dicek: kurung kurawal dan kurung biasa seimbang, semua variabel warna yang dipakai sudah didefinisikan.
+- Tangkapan layar langsung dari VM belum bisa — Chrome di VM menolak jalan headless ("Hatch WebGL domain policy is required"). Jadi tampilan akhirnya dicek lewat demo Railway di peramban setelah push, bukan dari tangkapan layar lokal.
+- Data uji dibersihkan, tabel produk kembali kosong.
+
+Kekurangan saat ini (jujur):
+- Sesi lain yang masih aktif tetap berlaku sampai kadaluarsa 12 jam sesudah ganti sandi.
+- Belum ada tangkapan layar tampilan baru di PROGRESS.md — cek langsung di demo.
+
 ## Tahap berikutnya
 
-Tahap 6 selesai — semua tahap kasir sudah beres (1 kerangka, 2 kelola produk, 3 kasir, 4 riwayat + laporan, 5 pencarian + tampilan HP, 6 login, 7 deploy Railway). Tahap berikutnya: usulkan ide project berikutnya dan tunggu Farid bilang "gas".
+Kasir sudah beres semua, termasuk poles tampilan. Tahap berikutnya: usulkan ide project berikutnya dan tunggu Farid bilang "gas".

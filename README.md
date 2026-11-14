@@ -20,6 +20,7 @@ Pemilik warung atau toko kecil yang ingin mencatat penjualan harian dengan rapi,
   - [x] Tahap 6b: Halaman masuk, nama pengguna + tombol keluar di navigasi
   - [x] Tahap 6c: Ganti kata sandi pemilik dari aplikasi
 - [x] Tahap 7: Deploy online
+- [x] Tahap 8: Tampilan lebih nyaman dipakai — navigasi lengket, kartu lembut, total dan omzet langsung kelihatan, stok menipis berwarna
 
 ## Teknologi yang dipakai
 

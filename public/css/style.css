@@ -1,33 +1,91 @@
-/* Tampilan dasar: rapi di layar HP dan laptop, warna tenang untuk warung. */
+/* Tampilan kasir warung — dibuat lebih nyaman dipakai.
+   Warna tetap hijau warung, tapi kartu lebih lembut, tombol lebih jelas,
+   dan yang penting (total, omzet, stok menipis) langsung kelihatan.
+   Semua halaman pakai berkas ini, jadi satu perubahan terasa di mana-mana. */
 * { box-sizing: border-box; }
+
+:root {
+  --hijau: #2f6b4f;
+  --hijau-tua: #1e4d36;
+  --hijau-muda: #e8f3ec;
+  --krem: #f7f4ec;
+  --kertas: #fffdf8;
+  --teks: #232823;
+  --abu: #6b6f66;
+  --garis: #e7e1d2;
+  --garis-input: #d9d3c1;
+  --merah: #a83226;
+  --kuning: #b7791f;
+}
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: #f4f1ea;
-  color: #222;
+  background: var(--krem);
+  color: var(--teks);
+  line-height: 1.5;
 }
 
 .wadah {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 24px 16px 48px;
 }
 
-h1 { margin: 0 0 8px; }
-h2 { margin: 0 0 12px; }
+/* Halaman masuk dan ganti kata sandi: kartunya lebih sempit dan di tengah */
+.sempit { max-width: 440px; }
 
-.keterangan { color: #555; }
+h1 {
+  margin: 0 0 6px;
+  font-size: 30px;
+  letter-spacing: -0.5px;
+  color: var(--hijau-tua);
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  border-left: 4px solid var(--hijau);
+  padding-left: 10px;
+}
+
+.keterangan { color: var(--abu); margin: 0 0 12px; }
+
+/* Baris status server: dibuat seperti pil kecil, bukan teks polos */
+#status {
+  display: inline-block;
+  margin: 0 0 4px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--hijau-muda);
+  color: var(--hijau);
+  font-size: 14px;
+}
 
 .kartu {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 16px;
+  background: var(--kertas);
+  border: 1px solid var(--garis);
+  border-radius: 16px;
+  padding: 20px;
   margin-top: 16px;
+  box-shadow: 0 1px 3px rgba(35, 40, 35, 0.06), 0 8px 24px rgba(35, 40, 35, 0.04);
 }
 
-.pesan { color: #9a3b26; }
+.pesan {
+  color: var(--merah);
+  background: #fdf0ee;
+  border-left: 3px solid var(--merah);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.berhasil {
+  color: var(--hijau-tua);
+  background: var(--hijau-muda);
+  border-left: 3px solid var(--hijau);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
 
 /* Kolom pencarian di atas daftar produk */
 .pencarian {
@@ -40,42 +98,60 @@ h2 { margin: 0 0 12px; }
   display: block;
   width: 100%;
   margin-top: 6px;
-  padding: 10px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--garis-input);
+  border-radius: 10px;
+  background: #fbfaf5;
   font: inherit;
 }
 
 /* Formulir tambah dan ubah produk */
 form label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   font-weight: 600;
+  font-size: 14px;
+  color: #3d443a;
 }
 
 form input {
   display: block;
   width: 100%;
   margin-top: 6px;
-  padding: 10px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--garis-input);
+  border-radius: 10px;
+  background: #fbfaf5;
   font: inherit;
+  font-size: 16px; /* 16px supaya peramban HP tidak memperbesar layar saat kolom disentuh */
+}
+
+/* Kolom yang sedang diisi: garis hijau + lingkaran lembut, biar ketahuan */
+form input:focus, .pencarian input:focus {
+  outline: none;
+  border-color: var(--hijau);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(47, 107, 79, 0.18);
 }
 
 button {
-  padding: 10px 16px;
+  padding: 12px 20px;
   min-height: 44px; /* Tinggi ketuk minimum supaya gampang ditekan di HP */
   border: none;
-  border-radius: 8px;
-  background: #2f6b4f;
+  border-radius: 10px;
+  background: var(--hijau);
   color: #fff;
   font: inherit;
-  font-size: 16px; /* 16px supaya peramban HP tidak memperbesar layar saat kolom disentuh */
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(35, 40, 35, 0.16);
+  transition: background 0.15s, transform 0.05s, box-shadow 0.15s;
 }
 
-button:hover { background: #265841; }
+button:hover { background: #265841; transform: translateY(-1px); }
+button:active { transform: translateY(0); box-shadow: none; }
+button:disabled { background: #b9bdb4; cursor: not-allowed; transform: none; }
 
 .baris-tombol {
   display: flex;
@@ -83,21 +159,33 @@ button:hover { background: #265841; }
   flex-wrap: wrap;
 }
 
-#tombol-batal { background: #777; }
+/* Tombol kedua (Batal, Kosongkan, Keluar): putih bergaris, bukan abu-abu penuh,
+   supaya tombol utama hijau langsung kelihatan mana yang utama */
+#tombol-batal, .tombol-abu, .tombol-keluar {
+  background: #fff;
+  color: #555;
+  border: 1.5px solid var(--garis-input);
+  box-shadow: none;
+}
+#tombol-batal:hover, .tombol-abu:hover, .tombol-keluar:hover { background: #f4f1ea; }
 
 .tombol-kecil {
-  padding: 6px 10px;
+  padding: 8px 14px;
   margin-right: 6px;
-  min-height: 36px;
+  min-height: 40px;
   min-width: 44px;
   font-size: 14px;
 }
 
-.tombol-hapus { background: #9a3b26; }
-.tombol-hapus:hover { background: #7e2f1e; }
+.tombol-hapus { background: var(--merah); }
+.tombol-hapus:hover { background: #8c2a20; }
 
 /* Tabel daftar produk, bisa digeser ke samping di layar HP */
-.bungkus-tabel { overflow-x: auto; }
+.bungkus-tabel {
+  overflow-x: auto;
+  border: 1px solid var(--garis);
+  border-radius: 12px;
+}
 
 table {
   width: 100%;
@@ -106,29 +194,65 @@ table {
 
 th, td {
   text-align: left;
-  padding: 8px;
-  border-bottom: 1px solid #e5e5e5;
+  padding: 12px;
+  border-bottom: 1px solid #efe9da;
   white-space: nowrap;
 }
 
-th { background: #f4f1ea; }
+th {
+  background: var(--krem);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--abu);
+}
 
-/* Navigasi antar halaman dan halaman kasir */
+tbody tr:nth-child(even) { background: #fbf9f3; }
+tbody tr:hover { background: #f3ecda; }
+tbody tr:last-child td { border-bottom: none; }
+
+/* Stok menipis dan habis: langsung kelihatan warnanya di tabel */
+.stok-tipis { color: var(--kuning); font-weight: 700; }
+.stok-habis { color: var(--merah); font-weight: 700; }
+
+/* Navigasi antar halaman dan halaman kasir.
+   Dibuat lengket di atas supaya gampang pindah halaman tanpa gulir ke atas. */
 .navigasi {
+  position: sticky;
+  top: 12px;
+  z-index: 10;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 16px;
-  margin-bottom: 16px;
+  align-items: center;
+  gap: 4px 8px;
+  margin-bottom: 20px;
+  padding: 8px 10px;
+  background: var(--kertas);
+  border: 1px solid var(--garis);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(35, 40, 35, 0.08);
 }
 
-/* Tautan navigasi dibuat setinggi 44px supaya gampang diketuk di HP */
-.navigasi a, .navigasi strong {
+/* Tautan navigasi jadi pil, yang aktif hijau penuh */
+.navigasi a {
   display: inline-block;
-  padding: 10px 0;
+  padding: 8px 12px;
   line-height: 1.4;
+  border-radius: 999px;
+  color: var(--hijau);
+  text-decoration: none;
+  font-weight: 600;
 }
+.navigasi a:hover { background: var(--hijau-muda); }
 
-.navigasi a { color: #2f6b4f; }
+.navigasi strong {
+  display: inline-block;
+  padding: 8px 12px;
+  line-height: 1.4;
+  border-radius: 999px;
+  background: var(--hijau);
+  color: #fff;
+}
 
 /* Info sesi di kanan navigasi: nama pengguna + tombol keluar, atau tautan Masuk */
 .info-masuk {
@@ -136,26 +260,44 @@ th { background: #f4f1ea; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 0;
+  padding: 4px 0;
   line-height: 1.4;
-  color: #555;
+  color: var(--abu);
+  font-size: 14px;
 }
 
-.tombol-keluar { background: #777; }
-.tombol-keluar:hover { background: #666; }
+.info-masuk a { padding: 8px 10px; }
 
+/* Baris pilih produk di kasir: dibuat seperti kartu kecil, bukan teks polos */
 .baris-produk {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  background: #fbf9f3;
+  border: 1px solid #ece5d3;
+  border-radius: 12px;
 }
+.baris-produk:hover { border-color: var(--hijau); }
+.baris-produk span { font-weight: 600; }
 
-.total { font-size: 18px; }
+/* Total keranjang: dibuat bar hijau gelap supaya langsung kelihatan */
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--hijau);
+  color: #fff;
+  font-size: 20px;
+}
+.total strong { color: #fff; }
 
-.berhasil { color: #2f6b4f; }
+.berhasil { color: var(--hijau-tua); }
 
 /* Halaman riwayat dan laporan: filter tanggal, ringkasan, baris yang bisa diklik */
 .baris-filter {
@@ -166,21 +308,48 @@ th { background: #f4f1ea; }
 
 .baris-filter label { flex: 1 1 160px; }
 
-.ringkasan p { font-size: 18px; }
+/* Ringkasan: dua kartu angka berdampingan, omzetnya besar dan hijau */
+.ringkasan {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ringkasan p {
+  margin: 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--krem);
+  font-size: 14px;
+  color: var(--abu);
+}
+.ringkasan strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 26px;
+  color: var(--hijau-tua);
+}
 
 .baris-bisa-diklik { cursor: pointer; }
 .baris-bisa-diklik:hover { background: #f4f1ea; }
 
-.tombol-abu { background: #777; }
+/* Tautan kembali di halaman masuk dan ganti kata sandi */
+.tautan-kembali {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--hijau);
+  font-weight: 600;
+  text-decoration: none;
+}
+.tautan-kembali:hover { text-decoration: underline; }
 
 /* Tahap 5b — Tampilan rapi di HP.
    Aturan di bawah ini hanya berlaku di layar kecil (lebar 600px ke bawah,
    ukuran HP pada umumnya). Di laptop tidak ada yang berubah. */
 @media (max-width: 600px) {
   /* Ruang tepi lebih hemat supaya isi lebih lega di layar sempit */
-  .wadah { padding: 16px 12px; }
-  h1 { font-size: 24px; }
-  .kartu { padding: 12px; }
+  .wadah { padding: 16px 12px 40px; }
+  h1 { font-size: 26px; }
+  .kartu { padding: 16px; }
 
   /* Tombol utama jadi selebar layar dan bertumpuk, supaya tidak salah tekan */
   .baris-tombol { flex-direction: column; }
@@ -202,15 +371,23 @@ th { background: #f4f1ea; }
 
   /* Tabel: huruf dan jarak lebih kecil, kolom nama boleh membungkus
      (kolom lain tetap satu baris dan bisa digeser ke samping) */
-  th, td { padding: 6px; font-size: 14px; }
+  th, td { padding: 8px; font-size: 14px; }
   td:first-child { white-space: normal; }
 
-  .ringkasan p { font-size: 16px; }
-  .total { font-size: 17px; }
+  /* Ringkasan: dua kartu angka bertumpuk ke bawah */
+  .ringkasan { grid-template-columns: 1fr; }
+  .ringkasan strong { font-size: 22px; }
+
+  .total { font-size: 18px; }
+
+  /* Navigasi lengket: biar tetap muat, jarak antar pil dikecilin */
+  .navigasi { top: 8px; padding: 6px 8px; gap: 2px 4px; }
+  .navigasi a, .navigasi strong { padding: 8px 10px; font-size: 14px; }
+  .info-masuk { font-size: 13px; }
 }
 
 /* Layar sangat kecil (HP lama / lebar 400px ke bawah): tabel lebih ringkas lagi */
 @media (max-width: 400px) {
-  th, td { padding: 5px; font-size: 13px; }
+  th, td { padding: 6px; font-size: 13px; }
   .tombol-kecil { font-size: 13px; }
 }
