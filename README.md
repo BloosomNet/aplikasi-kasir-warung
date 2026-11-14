@@ -16,7 +16,7 @@ Pemilik warung atau toko kecil yang ingin mencatat penjualan harian dengan rapi,
   - [x] Tahap 5a: Pencarian produk di halaman Kelola Produk dan Kasir
   - [x] Tahap 5b: Tampilan rapi di HP
 - [ ] Tahap 6: Login pemilik warung
-- [ ] Tahap 7: Deploy online
+- [x] Tahap 7: Deploy online
 
 ## Teknologi yang dipakai
 
@@ -50,7 +50,9 @@ Pemilik warung atau toko kecil yang ingin mencatat penjualan harian dengan rapi,
 
 ## Demo
 
-Belum ter-deploy. Tautan demo akan ditulis di sini setelah tahap deploy selesai.
+Tersedia online: https://aplikasi-kasir-warung-production.up.railway.app
+
+Di-deploy ke Railway (Node.js + MySQL). Basis data kosong waktu pertama kali dibuka, jadi daftar produk masih kosong — tambah produk dulu lewat halaman kelola produk.
 
 ## Kemajuan
 

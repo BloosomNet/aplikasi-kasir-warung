@@ -165,6 +165,18 @@ Yang sudah diuji (server Express di port 3000, basis data MariaDB lokal):
 - Server di-restart dengan kode baru, log nampilin "Tabel sudah siap.", `/api/sehat` ok, `/api/produk` tetap ngembaliin 4 produk contoh.
 - Nggak ada error di log server.
 
+## Tahap 7: Deploy ke Railway (dikerjain duluan, 2026-11-14)
+
+Deploy dimajuin atas permintaan Rid biar aplikasinya bisa dibuka dari browser, padahal Tahap 6 (login) belum dikerjain.
+
+- Akun Railway dibuat otomatis lewat "Continue with GitHub" (BloosomNet, faridilham220@gmail.com). Trial: 30 hari atau kredit $5, nggak diisi info pembayaran apa pun. Project Railway namanya "secure-miracle", region US West, Node 24.22.2.
+- Project dari repo GitHub ini; aplikasi GitHub Railway diizinkan hanya untuk repo kasir ini.
+- Database MySQL ditambah sebagai service di project yang sama, variabel basis data di service aplikasi diisi referensi ke service MySQL (DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME). Domain publik dibuat di Settings → Networking.
+- Demo: https://aplikasi-kasir-warung-production.up.railway.app — halaman utama, `/api/sehat`, dan `/api/produk` udah dicek langsung: semua jalan, daftar produk masih kosong karena basis data baru.
+- Tabel dibuat otomatis pas server nyala (lihat bagian "Siap deploy" di atas), jadi nggak perlu jalanin schema.sql manual di Railway.
+
+Yang belum: Tahap 6 login pemilik warung tetap jadi tahap berikutnya; habis itu tinggal deploy ulang, Railway otomatis deploy tiap push ke main.
+
 ## Tahap berikutnya
 
-Tahap 7 (deploy ke Railway) dikerjain duluan atas permintaan Rid, baru Tahap 6 login sesudahnya.
+Tahap 6: Login pemilik warung.
